@@ -1,0 +1,45 @@
+[gd_scene load_steps=9 format=3 uid="uid://lr2cdhbuil1y"]
+
+[ext_resource type="Script" uid="uid://cvg1awuyh7xi2" path="res://Weapon/weapon.gd" id="1_24633"]
+[ext_resource type="PackedScene" uid="uid://colqjpubjd4oj" path="res://Weapon/bullet.tscn" id="2_ptegs"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m87rf"]
+albedo_color = Color(0.41215247, 0.41215247, 0.41215247, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_m87rf"]
+top_radius = 0.1
+bottom_radius = 0.1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_24633"]
+albedo_color = Color(0.41960785, 0.21960784, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_24633"]
+size = Vector3(0.2, 0.5, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ptegs"]
+albedo_color = Color(0.41960785, 0.21960784, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ptegs"]
+size = Vector3(0.2, 0.4, 1)
+
+[node name="WeaponMesh" type="Node3D"]
+script = ExtResource("1_24633")
+bullet_scene = ExtResource("2_ptegs")
+
+[node name="Barrel" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.09399077, -1)
+material_override = SubResource("StandardMaterial3D_m87rf")
+mesh = SubResource("CylinderMesh_m87rf")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
+material_override = SubResource("StandardMaterial3D_24633")
+mesh = SubResource("BoxMesh_24633")
+
+[node name="Body2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 0, -0.17651892, 1.3583163)
+material_override = SubResource("StandardMaterial3D_ptegs")
+mesh = SubResource("BoxMesh_ptegs")
+
+[node name="BarrelLocation" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -1.9054906)

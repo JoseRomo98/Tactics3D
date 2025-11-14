@@ -1,0 +1,116 @@
+[gd_scene load_steps=15 format=3 uid="uid://cnmb3m522oym4"]
+
+[ext_resource type="Script" uid="uid://d6yqyjmuoosq" path="res://Soldier/soldier.gd" id="1_owpar"]
+[ext_resource type="Script" uid="uid://ob4rkxfos6b0" path="res://Soldier/movement_manager.gd" id="2_28q6g"]
+[ext_resource type="Script" uid="uid://cuwd70208eq3d" path="res://Soldier/aim_camera.gd" id="2_hdd0p"]
+[ext_resource type="Script" uid="uid://do6j5lvm8l4up" path="res://Soldier/cross_hair.gd" id="3_y72g1"]
+[ext_resource type="Script" uid="uid://dcbvvfekftkvn" path="res://Soldier/shoot_handler.gd" id="4_hxyfd"]
+[ext_resource type="PackedScene" uid="uid://lr2cdhbuil1y" path="res://Weapon/weapon_mesh.tscn" id="5_sp2p0"]
+[ext_resource type="Script" uid="uid://7etlowkx0o57" path="res://Soldier/ui.gd" id="7_1i5on"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_u6xno"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_owpar"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_owpar"]
+albedo_color = Color(0.19607843, 0.63529414, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_owpar"]
+material = SubResource("StandardMaterial3D_owpar")
+size = Vector3(0.5, 0.25, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_28q6g"]
+albedo_color = Color(0, 1, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_28q6g"]
+material = SubResource("StandardMaterial3D_28q6g")
+size = Vector3(0.2, 1.5, 0.2)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_owpar"]
+radius = 0.1
+
+[node name="Soldier" type="CharacterBody3D" groups=["soldier"]]
+script = ExtResource("1_owpar")
+weapon = ExtResource("5_sp2p0")
+
+[node name="ShootPosition" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.5, 1.5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.9999999, 0, 0, 0, 1, 0, 0, 0, 0.9999999, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_u6xno")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_owpar")
+skeleton = NodePath("../CollisionShape3D")
+
+[node name="Visor" type="MeshInstance3D" parent="Mesh"]
+transform = Transform3D(0.9999999, 0, 0, 0, 1, 0, 0, 0, 0.9999999, 0, 0.5, -0.24999997)
+mesh = SubResource("BoxMesh_owpar")
+skeleton = NodePath("../../CollisionShape3D")
+
+[node name="Back" type="MeshInstance3D" parent="Mesh"]
+transform = Transform3D(0.9999999, 0, 0, 0, 1, 0, 0, 0, 0.9999999, 0, 0, 0.45)
+mesh = SubResource("BoxMesh_28q6g")
+skeleton = NodePath("../../CollisionShape3D")
+
+[node name="CameraPivot" type="Node3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0, 1, 0, 1.5, 0)
+
+[node name="AimCamera" type="Camera3D" parent="CameraPivot"]
+unique_name_in_owner = true
+transform = Transform3D(0.9999999, 0, 0, 0, 0.9999999, 0, 0, 0, 1, 0.9999999, -0.99999976, 1.5)
+fov = 43.9
+script = ExtResource("2_hdd0p")
+
+[node name="ShootHandler" type="Node3D" parent="CameraPivot/AimCamera"]
+script = ExtResource("4_hxyfd")
+
+[node name="WeaponMesh" parent="CameraPivot/AimCamera/ShootHandler" instance=ExtResource("5_sp2p0")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -0.25, -0.34010804, -1.75)
+
+[node name="CrossHair" type="Control" parent="CameraPivot/AimCamera"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("3_y72g1")
+
+[node name="RayCast3D" type="RayCast3D" parent="CameraPivot/AimCamera"]
+target_position = Vector3(0, 0, -100)
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot"]
+shape = SubResource("SphereShape3D_owpar")
+spring_length = 3.0
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D"]
+unique_name_in_owner = true
+transform = Transform3D(0.9999999, 0, 0, 0, 0.9063077, 0.4226182, 0, -0.42261824, 0.9063079, 0, 1.5, 2.25)
+
+[node name="MovementManager" type="Node" parent="."]
+script = ExtResource("2_28q6g")
+energy = 200.0
+
+[node name="UI" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+script = ExtResource("7_1i5on")
+
+[node name="EnergyBar" type="ProgressBar" parent="UI"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+max_value = 200.0

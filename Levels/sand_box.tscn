@@ -1,0 +1,88 @@
+[gd_scene load_steps=12 format=3 uid="uid://bmremat7q8ywn"]
+
+[ext_resource type="Texture2D" uid="uid://bsebwpex7ql3m" path="res://Assets/Textures/texture_01.png" id="1_62ecr"]
+[ext_resource type="PackedScene" uid="uid://cnmb3m522oym4" path="res://Soldier/soldier.tscn" id="2_gwq1y"]
+[ext_resource type="Texture2D" uid="uid://dqmeov5l6uq6a" path="res://Assets/Textures/p_texture_01.png" id="3_ebqie"]
+[ext_resource type="PackedScene" uid="uid://ch2jsrhk1m53s" path="res://Soldier/enemy.tscn" id="4_3lfcp"]
+[ext_resource type="Script" uid="uid://kxxksd8nxkcx" path="res://Levels/turn_manager.gd" id="5_ahuj3"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gwq1y"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_ebqie"]
+sky_material = SubResource("ProceduralSkyMaterial_gwq1y")
+
+[sub_resource type="Environment" id="Environment_3lfcp"]
+background_mode = 2
+sky = SubResource("Sky_ebqie")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gwq1y"]
+albedo_texture = ExtResource("1_62ecr")
+uv1_triplanar = true
+uv1_world_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3lfcp"]
+albedo_texture = ExtResource("3_ebqie")
+uv1_triplanar = true
+uv1_triplanar_sharpness = 1.5
+
+[sub_resource type="LabelSettings" id="LabelSettings_ahuj3"]
+font_size = 26
+
+[node name="SandBox" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_3lfcp")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+material_override = SubResource("StandardMaterial3D_gwq1y")
+use_collision = true
+size = Vector3(40, 1, 40)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.16139507, 2.0000002, -11.386389)
+material_override = SubResource("StandardMaterial3D_3lfcp")
+use_collision = true
+size = Vector3(6, 4, 1)
+
+[node name="TurnManager" type="Node" parent="."]
+script = ExtResource("5_ahuj3")
+
+[node name="Allies" type="Node3D" parent="TurnManager"]
+
+[node name="Soldier" parent="TurnManager/Allies" instance=ExtResource("2_gwq1y")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Soldier2" parent="TurnManager/Allies" instance=ExtResource("2_gwq1y")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.1098802, 1, 0)
+
+[node name="Enemies" type="Node3D" parent="TurnManager"]
+
+[node name="Enemy" parent="TurnManager/Enemies" instance=ExtResource("4_3lfcp")]
+transform = Transform3D(-0.03864939, 0, -0.99925286, 0, 1, 0, 0.99925286, 0, -0.03864939, -0.29295588, 1, -14.9850855)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Label" type="Label" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "Turns Left: "
+label_settings = SubResource("LabelSettings_ahuj3")
