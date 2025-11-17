@@ -2,7 +2,7 @@ extends CharacterBody3D
 
 @export var sensitivity: float = 0.001
 @export var tilt_limit: float = deg_to_rad(60)
-@export var weapon: PackedScene 
+@export var weapon: PackedScene
 
 @onready var camera_3d: Camera3D = %Camera3D
 @onready var camera_pivot: Node3D = %CameraPivot
@@ -10,18 +10,21 @@ extends CharacterBody3D
 @onready var movement_manager: Node = $MovementManager
 @onready var cross_hair: Control = $CameraPivot/AimCamera/CrossHair
 
+@onready var weapon_mesh: Node3D = %WeaponMesh
 
 @onready var mesh: MeshInstance3D = $Mesh
 @onready var shoot_position: Node3D = $ShootPosition
 @onready var aim_camera: Camera3D = %AimCamera
+
+@export var base_stats: Resource
 
 #@onready var weapon_mesh: Node3D = $Mesh/WeaponMesh
 var is_firing: bool = false
 var is_aiming: bool = false
 var is_moving: bool = false
 var is_active: bool = false
+var is_select: bool = false
 
-@onready var weapon_mesh: Node3D = $CameraPivot/AimCamera/ShootHandler/WeaponMesh
 
 
 const SPEED = 5.0
@@ -33,20 +36,20 @@ var aiming_point: Vector3 = Vector3.ZERO
 
 
 func _physics_process(delta: float) -> void:
-	if !is_active:
+	if !is_select:
 		return
 	
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 
-	# Handle jump.
-	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
-		velocity.y = JUMP_VELOCITY
-
-	# Get the input direction and handle the movement/deceleration.
-	# As good practice, you should replace UI actions with custom gameplay actions.
-	#var input_dir := Input.get_vector("move_left", "move_right", "move_foward", "move_back")
+	# Activar unidad
+	if Input.is_action_just_pressed("ui_accept"):
+		is_active = true
+	
+	#Si no esta activo, no hacer nada
+	if !is_active:
+		return
 	
 	#Leer direccion del Inpur
 	var input_dir := Input.get_vector("move_left", "move_right", "move_foward", "move_back")
@@ -88,7 +91,9 @@ func _process(delta: float) -> void:
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	camera_3d.current = true
+	if !is_active:
+		aim_camera.current = false
+		camera_3d.current = false
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
@@ -96,7 +101,7 @@ func _input(event: InputEvent) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	
-	if !is_active:
+	if !is_select:
 		return
 	
 	if event is InputEventMouseMotion:
@@ -121,6 +126,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		camera_pivot.rotation.x = clampf(camera_pivot.rotation.x, -tilt_limit, tilt_limit)
 		camera_pivot.rotation.y += -event.relative.x * sensitivity
 	
+	#No entrar en modo accion si no esta activo
+	if !is_active:
+		return
+		
 	if Input.is_action_just_pressed("secondary_action"):
 		manage_aiming()
 
@@ -141,6 +150,7 @@ func manage_aiming() -> void:
 		
 		#Hacer que el modelo gire a la direccion objetivo
 		mesh.look_at(target_position, Vector3.UP)
+		
 		aim_camera.current = true
 		cross_hair.visible = true
 		
@@ -150,4 +160,3 @@ func manage_aiming() -> void:
 		cross_hair.visible = false
 		
 		camera_3d.current = true
-	

@@ -17,17 +17,23 @@ func shoot(target: Vector3) -> void:
 	var bullet = bullet_scene.instantiate()
 	bullet.damage = damage
 	
-	# Posicionar la bala en el cañón
-	bullet.global_transform.origin = barrel_location.global_transform.origin
-
-	# Calcular dirección hacia el objetivo
-	var dir = (target - bullet.global_transform.origin).normalized()
-
-	# Orientar la bala hacia la dirección
-	bullet.look_at(target, Vector3.UP)
-
-	# Configurar velocidad (si la bala usa velocity en su script)
-	bullet.velocity = dir * bullet.speed  # speed: export en la bala
-
-	# Agregar la bala al árbol de escenas
+	# Agregar bala instanciada al arbol
 	get_tree().current_scene.add_child(bullet)
+	
+	var origin = barrel_location.global_position
+	bullet.global_position = origin
+
+	var dir = (target - origin).normalized()
+	bullet.velocity = dir * bullet.speed
+	
+	# Posicionar la bala en el cañón
+	#bullet.global_transform.origin = barrel_location.global_transform.origin
+	
+	# Calcular dirección hacia el objetivo
+	#var dir = (target - bullet.global_transform.origin).normalized()
+	
+	# Orientar la bala hacia la dirección
+	#bullet.look_at(target, Vector3.UP)
+	
+	# Configurar velocidad (si la bala usa velocity en su script)
+	#bullet.velocity = dir * bullet.speed  # speed: export en la bala

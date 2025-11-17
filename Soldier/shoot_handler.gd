@@ -1,8 +1,9 @@
 extends Node3D
 
 @onready var aim_camera: Camera3D = %AimCamera
-@onready var soldier: CharacterBody3D = $"../../.."
 @onready var weapon_mesh: Node3D = $WeaponMesh
+@onready var soldier: CharacterBody3D = $"../../.."
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

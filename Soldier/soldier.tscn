@@ -3,10 +3,10 @@
 [ext_resource type="Script" uid="uid://d6yqyjmuoosq" path="res://Soldier/soldier.gd" id="1_owpar"]
 [ext_resource type="Script" uid="uid://ob4rkxfos6b0" path="res://Soldier/movement_manager.gd" id="2_28q6g"]
 [ext_resource type="Script" uid="uid://cuwd70208eq3d" path="res://Soldier/aim_camera.gd" id="2_hdd0p"]
+[ext_resource type="Script" uid="uid://dhj5681iv8e1g" path="res://Soldier/soldier_stats.gd" id="3_1i5on"]
 [ext_resource type="Script" uid="uid://do6j5lvm8l4up" path="res://Soldier/cross_hair.gd" id="3_y72g1"]
 [ext_resource type="Script" uid="uid://dcbvvfekftkvn" path="res://Soldier/shoot_handler.gd" id="4_hxyfd"]
 [ext_resource type="PackedScene" uid="uid://lr2cdhbuil1y" path="res://Weapon/weapon_mesh.tscn" id="5_sp2p0"]
-[ext_resource type="Script" uid="uid://7etlowkx0o57" path="res://Soldier/ui.gd" id="7_1i5on"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_u6xno"]
 
@@ -32,6 +32,7 @@ radius = 0.1
 [node name="Soldier" type="CharacterBody3D" groups=["soldier"]]
 script = ExtResource("1_owpar")
 weapon = ExtResource("5_sp2p0")
+base_stats = ExtResource("3_1i5on")
 
 [node name="ShootPosition" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.5, 1.5)
@@ -65,9 +66,11 @@ fov = 43.9
 script = ExtResource("2_hdd0p")
 
 [node name="ShootHandler" type="Node3D" parent="CameraPivot/AimCamera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.9604645e-08, 0)
 script = ExtResource("4_hxyfd")
 
 [node name="WeaponMesh" parent="CameraPivot/AimCamera/ShootHandler" instance=ExtResource("5_sp2p0")]
+unique_name_in_owner = true
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -0.25, -0.34010804, -1.75)
 
 [node name="CrossHair" type="Control" parent="CameraPivot/AimCamera"]
@@ -95,22 +98,3 @@ transform = Transform3D(0.9999999, 0, 0, 0, 0.9063077, 0.4226182, 0, -0.42261824
 [node name="MovementManager" type="Node" parent="."]
 script = ExtResource("2_28q6g")
 energy = 200.0
-
-[node name="UI" type="MarginContainer" parent="."]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
-script = ExtResource("7_1i5on")
-
-[node name="EnergyBar" type="ProgressBar" parent="UI"]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-max_value = 200.0

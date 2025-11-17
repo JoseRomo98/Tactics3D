@@ -39,14 +39,14 @@ func get_impact(range:int) -> Vector3:
 
 	if result.size() > 0:
 		# --- DEBUG INFO ---
-		print("Hit at:", result.position)
-		print("Hit normal:", result.normal)
-		print("Hit collider:", result.collider)
-		print("Hit collider name:", result.collider.name)
+		#print("Hit at:", result.position)
+		#print("Hit normal:", result.normal)
+		#print("Hit collider:", result.collider)
+		#print("Hit collider name:", result.collider.name)
 		# -------------------
 		
 		return result.position
 	else:
 		# No colisionó con nada
-		print("No hit. End point:", destination)
+		#print("No hit. End point:", destination)
 		return destination
